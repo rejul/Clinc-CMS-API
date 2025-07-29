@@ -1,42 +1,21 @@
 {
-  "name": "clinic-cms-api",
-  "version": "1.0.0",
-  "main": "server.js",
-  "scripts": {
-    "dev": "nodemon backend/server.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/rejul/Clinc-CMS-API.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/rejul/Clinc-CMS-API/issues"
-  },
-  "homepage": "https://github.com/rejul/Clinc-CMS-API#readme",
-  "description": "",
   "dependencies": {
     "bcryptjs": "^3.0.2",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
-    "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.16.5"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  }
-}
-
-{
   "name": "clinic-cms-api",
   "version": "1.0.0",
   "description": "Backed API for Clinic CMS",
-  "main": "index.js",
+  "main": "backend/server.js",
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "nodemon backend/server.js",
+    "start": "node backend/server.js"
   },
   "repository": {
     "type": "git",
@@ -48,15 +27,5 @@
   "bugs": {
     "url": "https://github.com/rejul/Clinc-CMS-API/issues"
   },
-  "homepage": "https://github.com/rejul/Clinc-CMS-API#readme",
-  "devDependencies": {
-    "nodemon": "^3.1.10"
-  },
-  "dependencies": {
-    "bcryptjs": "^3.0.2",
-    "dotenv": "^17.2.1",
-    "express": "^5.1.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.16.5"
-  }
+  "homepage": "https://github.com/rejul/Clinc-CMS-API#readme"
 }
