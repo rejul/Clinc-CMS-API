@@ -1,7 +1,12 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 
+const AutoIncrement = require('mongoose-sequence')(mongoose);
+
+// Staff Schema
+// This schema defines the structure for staff members in the clinic management system.
 const StaffSchema = new mongoose.Schema({
+  staffId: { type: Number, unique: true },
   name: String,
   email: {
     type: String,
@@ -13,9 +18,11 @@ const StaffSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  role: { type: mongoose.Schema.Types.ObjectId, ref: 'Role' },
+  roleId: { type: Number, ref: 'Role' },
   isActive: { type: Boolean, default: true }
-}, { timestamps: true });
+}, { timestamps: true, autoIndex: true });
+
+StaffSchema.plugin(AutoIncrement, { inc_field: 'staffId' });
 
 // Hash password before saving
 StaffSchema.pre('save', async function (next) {

@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
+const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 //Consultation Schema
 
 const ConsultationSchema = new mongoose.Schema({
-  appointment: { type: mongoose.Schema.Types.ObjectId, ref: 'Appointment' },
-  doctor: { type: mongoose.Schema.Types.ObjectId, ref: 'Doctor' },
+  consultationId: { type: Number, unique: true },
+  appointmentId: { type: Number, ref: 'Appointment' },
+  doctorId: { type: Number, ref: 'Doctor' },
   notes: String,
   diagnosis: String
-});
+}, { timestamps: true, autoIndex: true });
 
-module.exports = mongoose.model('Consult', ConsultationSchema);
+ConsultationSchema.plugin(AutoIncrement, { inc_field: 'consultationId' });
+module.exports = mongoose.model('Consultation', ConsultationSchema);
