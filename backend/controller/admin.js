@@ -76,9 +76,9 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const staff = await Staff.findOne({ email });
-    if (!staff) return res.status(404).json({ error: 'Invalid credentials' });
-    const isMatch = await staff.matchPassword(password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
+    if (!staff || !(await staff.matchPassword(password))) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
     const sanitizedStaff = {
       id: staff._id,
       name: staff.name,
