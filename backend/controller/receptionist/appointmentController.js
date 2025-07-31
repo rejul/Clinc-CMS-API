@@ -31,7 +31,9 @@ exports.updateAppointment = async (req, res) => {
 // Get Appointment by ID
 exports.getAppointmentById = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.appointmentId)
+    const appointment = await Appointment.findOne({
+      appointmentId: req.params.appointmentId,
+    })
       .populate({
         path: "patientId",
         model: "Patient",
