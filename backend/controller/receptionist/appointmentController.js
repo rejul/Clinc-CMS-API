@@ -31,23 +31,9 @@ exports.updateAppointment = async (req, res) => {
 // Get Appointment by ID
 exports.getAppointmentById = async (req, res) => {
   try {
-    const appointment = await Appointment.findOne({
-      appointmentId: req.params.appointmentId,
-    })
-      .populate({
-        path: "patientId",
-        model: "Patient",
-        localField: "patientId",
-        foreignField: "patientId",
-        justOne: true,
-      })
-      .populate({
-        path: "doctorId",
-        model: "Doctor",
-        localField: "doctorId",
-        foreignField: "doctorId",
-        justOne: true,
-      });
+    const appointment = await Appointment.findById(req.params.appointmentId)
+      .populate("patient")
+      .populate("doctor");
     if (!appointment) {
       return res.status(404).json({ error: "Appointment not found" });
     }
