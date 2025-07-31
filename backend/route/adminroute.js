@@ -40,7 +40,5 @@ router.get('/specializations', adminController.getAllSpecializations);
 router.get('/specializations/:specializationId', adminController.getSpecializationById);
 router.put('/specializations/:specializationId', adminController.updateSpecialization);
 
-// Staff login
-router.post('/staff/login', adminController.login);
 
 module.exports = router;
