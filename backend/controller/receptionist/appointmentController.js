@@ -33,7 +33,21 @@ exports.getAppointmentById = async (req, res) => {
   try {
     const appointment = await Appointment.findOne({
       appointmentId: req.params.appointmentId,
-    });
+    })
+      .populate({
+        path: "patientId",
+        model: "Patient",
+        localField: "patientId",
+        foreignField: "patientId",
+        justOne: true,
+      })
+      .populate({
+        path: "doctorId",
+        model: "Doctor",
+        localField: "doctorId",
+        foreignField: "doctorId",
+        justOne: true,
+      });
     if (!appointment) {
       return res.status(404).json({ error: "Appointment not found" });
     }
@@ -47,7 +61,21 @@ exports.getAppointmentById = async (req, res) => {
 exports.getAppointmentsByDate = async (req, res) => {
   try {
     const date = req.query.date;
-    const appointments = await Appointment.find({ date });
+    const appointments = await Appointment.find({ date })
+      .populate({
+        path: "patientId",
+        model: "Patient",
+        localField: "patientId",
+        foreignField: "patientId",
+        justOne: true,
+      })
+      .populate({
+        path: "doctorId",
+        model: "Doctor",
+        localField: "doctorId",
+        foreignField: "doctorId",
+        justOne: true,
+      });
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -76,7 +104,21 @@ exports.getAppointmentsByPatient = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       patientId: req.params.patientId,
-    });
+    })
+      .populate({
+        path: "patientId",
+        model: "Patient",
+        localField: "patientId",
+        foreignField: "patientId",
+        justOne: true,
+      })
+      .populate({
+        path: "doctorId",
+        model: "Doctor",
+        localField: "doctorId",
+        foreignField: "doctorId",
+        justOne: true,
+      });
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -88,7 +130,21 @@ exports.getAppointmentsByDoctor = async (req, res) => {
   try {
     const appointments = await Appointment.find({
       doctorId: req.params.doctorId,
-    });
+    })
+      .populate({
+        path: "patientId",
+        model: "Patient",
+        localField: "patientId",
+        foreignField: "patientId",
+        justOne: true,
+      })
+      .populate({
+        path: "doctorId",
+        model: "Doctor",
+        localField: "doctorId",
+        foreignField: "doctorId",
+        justOne: true,
+      });
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -99,7 +155,21 @@ exports.getAppointmentsByDoctor = async (req, res) => {
 exports.getAppointmentsByStatus = async (req, res) => {
   try {
     const status = req.query.status;
-    const appointments = await Appointment.find({ status });
+    const appointments = await Appointment.find({ status })
+      .populate({
+        path: "patientId",
+        model: "Patient",
+        localField: "patientId",
+        foreignField: "patientId",
+        justOne: true,
+      })
+      .populate({
+        path: "doctorId",
+        model: "Doctor",
+        localField: "doctorId",
+        foreignField: "doctorId",
+        justOne: true,
+      });
     res.json(appointments);
   } catch (err) {
     res.status(500).json({ error: err.message });

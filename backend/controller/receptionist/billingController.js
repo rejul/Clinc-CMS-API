@@ -33,6 +33,12 @@ exports.getBillingByAppointment = async (req, res) => {
   try {
     const bill = await Billing.findOne({
       appointmentId: req.params.appointmentId,
+    }).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
     });
     if (!bill) {
       return res.status(404).json({ error: "Billing record not found" });
@@ -49,6 +55,12 @@ exports.getBillingsByDateRange = async (req, res) => {
     const { startDate, endDate } = req.query;
     const bills = await Billing.find({
       billingDate: { $gte: new Date(startDate), $lte: new Date(endDate) },
+    }).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
     });
     res.json(bills);
   } catch (err) {

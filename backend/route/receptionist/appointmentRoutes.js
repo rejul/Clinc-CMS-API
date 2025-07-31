@@ -13,6 +13,10 @@ router.post(
   runValidation,
   appointmentCtrl.createAppointment
 );
+router.get("/", appointmentCtrl.getAppointmentsByDate);
+router.get("/patient/:patientId", appointmentCtrl.getAppointmentsByPatient);
+router.get("/doctor/:doctorId", appointmentCtrl.getAppointmentsByDoctor);
+router.get("/status", appointmentCtrl.getAppointmentsByStatus);
 router.put(
   "/:appointmentId",
   validateAppointment,
@@ -20,10 +24,6 @@ router.put(
   appointmentCtrl.updateAppointment
 );
 router.get("/:appointmentId", appointmentCtrl.getAppointmentById);
-router.get("/", appointmentCtrl.getAppointmentsByDate);
 router.patch("/:appointmentId/cancel", appointmentCtrl.cancelAppointment);
-router.get("/patient/:patientId", appointmentCtrl.getAppointmentsByPatient);
-router.get("/doctor/:doctorId", appointmentCtrl.getAppointmentsByDoctor);
-router.get("/status", appointmentCtrl.getAppointmentsByStatus);
 
 module.exports = router;
