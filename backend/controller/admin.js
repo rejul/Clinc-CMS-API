@@ -79,7 +79,13 @@ exports.login = async (req, res) => {
     if (!staff) return res.status(404).json({ error: 'Invalid credentials' });
     const isMatch = await staff.matchPassword(password);
     if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-    res.json(staff);
+    const sanitizedStaff = {
+      id: staff._id,
+      name: staff.name,
+      email: staff.email,
+      role: staff.roleId, // Assuming roleId is a necessary field
+    };
+    res.json(sanitizedStaff);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
