@@ -1,7 +1,7 @@
-
 const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
+const adminRoutes = require('./route/adminroute');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -20,6 +20,9 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
+
+app.use('/api', adminRoutes);
+
 // Start the server
 const PORT = process.env.PORT || 8000;
 
