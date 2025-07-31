@@ -7,7 +7,19 @@ const DoctorSchema = new mongoose.Schema({
   specializationId: { type: Number, ref: 'Specialization' },
   qualifications: String,
   isActive: { type: Boolean, default: true }
-}, { timestamps: true, autoIndex: true });
+}, {
+  timestamps: true,
+  autoIndex: true,
+  versionKey: false, // Disable __v field
+  _id: false,        // Hides _id field in subdocuments
+  toJSON: {
+    transform: function(doc, ret) {
+      delete ret._id;   // Remove _id field in view
+      delete ret.__v;   // Remove __v field in view
+      return ret;
+    }
+  }
+});
 
 DoctorSchema.plugin(AutoIncrement, { inc_field: 'doctorId' });
 module.exports = mongoose.model('Doctor', DoctorSchema);

@@ -8,7 +8,17 @@ const MedicinePrescriptionSchema = new mongoose.Schema({
   doctorId: { type: Number, ref: 'Doctor' },
   patientId: { type: Number, ref: 'Patient' },
   medicines: [{ name: String, dosage: String, frequency: String }]
-}, { timestamps: true, autoIndex: true });
+}, { 
+  timestamps: true, 
+  autoIndex: true,
+  toJSON: {
+    transform: function(doc, ret) {
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
 
 MedicinePrescriptionSchema.plugin(AutoIncrement, { inc_field: 'prescriptionId' });
 module.exports = mongoose.model('MedicinePrescription', MedicinePrescriptionSchema);

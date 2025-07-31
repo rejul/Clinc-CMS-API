@@ -9,7 +9,20 @@ const ConsultationSchema = new mongoose.Schema({
   doctorId: { type: Number, ref: 'Doctor' },
   notes: String,
   diagnosis: String
-}, { timestamps: true, autoIndex: true });
+}, { 
+  timestamps: true, // Automatically manage createdAt and updatedAt fields
+  autoIndex: true, // Enable auto-indexing for better performance
+  versionKey: false, // Disable __v field
+  // hides id field in subdocuments
+    _id: false, // keep _id in subdocuments
+    toJSON: {
+      transform: function(doc, ret) { 
+      delete ret._id; // Remove _id field in view
+      delete ret.__v; // Remove __v field in view
+      return ret;
+    }
+  }
+});
 
 ConsultationSchema.plugin(AutoIncrement, { inc_field: 'consultationId' });
 module.exports = mongoose.model('Consultation', ConsultationSchema);
