@@ -87,10 +87,31 @@ exports.getLabTestResultByAppointment = async (req, res) => {
 
 exports.getLabTestResultsByDate = async (req, res) => {
   const { startDate, endDate } = req.query;
-  const results = await LabTestResult.find({
-    date: { $gte: new Date(startDate), $lte: new Date(endDate) },
-  });
-  res.json(results);
+
+  // Validate startDate and endDate
+  if (!startDate || !endDate) {
+    return res.status(400).json({ error: "Both startDate and endDate are required." });
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    return res.status(400).json({ error: "Invalid date format. Use a valid date string." });
+  }
+
+  if (start > end) {
+    return res.status(400).json({ error: "startDate cannot be later than endDate." });
+  }
+
+  try {
+    const results = await LabTestResult.find({
+      date: { $gte: start, $lte: end },
+    });
+    res.json(results);
+  } catch (err) {
+    res.status(500).json({ error: "An error occurred while fetching results." });
+  }
 };
 
 exports.deactivateLabTestPrescription = async (req, res) => {
