@@ -11,13 +11,11 @@ const MedicinePrescriptionSchema = new mongoose.Schema({
     name: String,
     dosage: String,
     frequency: String,
-    _id: false // hides _id for each medicine subdocument
   }]
 }, { 
   timestamps: true, 
   autoIndex: true,
   versionKey: false, // Disable __v field
-  id: false, // hides virtual id getter (_id)
   toJSON: {
     transform: function(doc, ret) {
       delete ret._id; // Remove _id field in view

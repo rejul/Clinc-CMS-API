@@ -11,7 +11,6 @@ const LabTestPrescriptionSchema = new mongoose.Schema({
   timestamps: true, 
   autoIndex: true,
   versionKey: false,
-  _id: false,
   toJSON: { 
     virtuals: true,
     transform: function(doc, ret) {
