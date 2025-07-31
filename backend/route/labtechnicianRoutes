@@ -7,32 +7,33 @@ const {
 } = require("../validation/labtechnicianValidator");
 
 // Lab Test Management
-router.post("/api/labtests", validateLabTest, controller.addLabTest);
+router.post("/labtests", validateLabTest, controller.addLabTest);
 router.put(
-  "/api/labtests/:labTestId",
+  "/labtests/:labTestId",
   validateLabTest,
   controller.updateLabTest
 );
-router.get("/api/labtests/:labTestId", controller.getLabTestById);
-router.get("/api/labtests", controller.listLabTests);
+router.get("/labtests/:labTestId", controller.getLabTestById);
+router.get("/labtests", controller.listLabTests);
 router.patch(
-  "/api/labtests/:labTestId/deactivate",
+  "/labtests/:labTestId/deactivate",
   controller.deactivateLabTest
 );
 
 // Lab Test Prescription Management
+router.post("/labtests/results", validateLabTestResult, controller.createLabTestResult);
+router.get("/labtests/results", controller.getLabTestResultsByDate);
+router.get(
+  "/labtests/results/appointment/:appointmentId",
+  controller.getLabTestResultByAppointment
+);
 router.put(
-  "/api/labtests/results/:labTestPrescriptionId",
+  "/labtests/results/:labTestPrescriptionId",
   validateLabTestResult,
   controller.recordLabTestResult
 );
-router.get(
-  "/api/labtests/results/appointment/:appointmentId",
-  controller.getLabTestResultByAppointment
-);
-router.get("/api/labtests/results", controller.getLabTestResultsByDate);
 router.patch(
-  "/api/labtests/:labTestPrescriptionId/deactivate",
+  "/labtests/:labTestPrescriptionId/deactivate",
   controller.deactivateLabTestPrescription
 );
 

@@ -19,10 +19,7 @@ router.get(
   "/inventory/:medicineId",
   pharmacistController.getInventoryByMedicine
 );
-router.put("/inventory/:medicineStockId", pharmacistController.updateInventory);
-router.patch(
-  "/inventory/:medicineStockId/flag",
-  pharmacistController.flagLowStock
-);
+router.put("/inventory/:medicineId", pharmacistController.updateInventory);
+router.patch("/inventory/:medicineId/flag", pharmacistController.flagLowStock);
 
 module.exports = router;
