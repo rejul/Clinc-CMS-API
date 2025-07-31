@@ -6,8 +6,21 @@ const LabTestPrescriptionSchema = new mongoose.Schema({
   appointmentId: { type: Number, ref: 'Appointment' },
   doctorId: { type: Number, ref: 'Doctor' },
   patientId: { type: Number, ref: 'Patient' },
-  tests: [{ testId: Number, name: String }]
-}, { timestamps: true, autoIndex: true });
+  tests: [{ testId: Number, name: String, _id: false }]
+}, { 
+  timestamps: true, 
+  autoIndex: true,
+  versionKey: false,
+  _id: false,
+  toJSON: { 
+    virtuals: true,
+    transform: function(doc, ret) {
+      delete ret._id;
+      delete ret.__v;
+      return ret;
+    }
+  }
+});
 
 LabTestPrescriptionSchema.plugin(AutoIncrement, { inc_field: 'labPrescId' });
 module.exports = mongoose.model('LabTestPrescription', LabTestPrescriptionSchema);
