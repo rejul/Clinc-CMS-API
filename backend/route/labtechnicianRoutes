@@ -1,0 +1,28 @@
+const express = require("express");
+const router = express.Router();
+const controller = require("../controller/labtechnicianController");
+
+// Lab Test Management
+router.post("/labtests", controller.addLabTest);
+router.put("/labtests/:labTestId", controller.updateLabTest);
+router.get("/labtests/:labTestId", controller.getLabTestById);
+router.get("/labtests", controller.listLabTests);
+router.patch("/labtests/:labTestId/deactivate", controller.deactivateLabTest);
+
+// Lab Test Prescription Management
+router.post("/labtests/results", controller.createLabTestResult);
+router.get("/labtests/results", controller.getLabTestResultsByDate);
+router.get(
+  "/labtests/results/appointment/:appointmentId",
+  controller.getLabTestResultByAppointment
+);
+router.put(
+  "/labtests/results/:labTestPrescriptionId",
+  controller.recordLabTestResult
+);
+router.patch(
+  "/labtests/:labTestPrescriptionId/deactivate",
+  controller.deactivateLabTestPrescription
+);
+
+module.exports = router;

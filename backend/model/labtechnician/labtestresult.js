@@ -19,8 +19,7 @@ const LabTestResultSchema = new mongoose.Schema({
       return ret;
     }
   },
-  versionKey: false, // Disable __v field
-  id: false // hides virtual id getter (_id)
+  versionKey: false // Disable __v field
 });
 
 LabTestResultSchema.plugin(AutoIncrement, { inc_field: 'labResultId' });
