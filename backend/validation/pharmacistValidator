@@ -1,0 +1,29 @@
+const { body, validationResult } = require("express-validator");
+
+exports.validateMedicine = [
+  body("name").notEmpty().withMessage("Name is required"),
+  body("manufacturer").notEmpty().withMessage("Manufacturer is required"),
+  body("unit").notEmpty().withMessage("Unit is required"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+    next();
+  },
+];
+
+exports.validateInventory = [
+  body("medicine").notEmpty().withMessage("Medicine reference is required"),
+  body("quantity")
+    .isInt({ min: 0 })
+    .withMessage("Quantity must be a non-negative number"),
+  body("expiryDate")
+    .isISO8601()
+    .withMessage("Expiry Date must be a valid date"),
+  (req, res, next) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+      return res.status(400).json({ errors: errors.array() });
+    next();
+  },
+];

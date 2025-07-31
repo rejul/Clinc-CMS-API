@@ -1,33 +1,47 @@
+const express = require("express");
+const mongoose = require("mongoose");
+const dotenv = require("dotenv");
+const pharmacistRoutes = require("./route/pharmacistRoutes");
+const labTechnicianRoutes = require("./route/labtechnicianRoutes");
 
-const express = require('express');
-const connectDB = require('./config/db');
-const dotenv = require('dotenv');
-
-// Load environment variables from .env file
 dotenv.config();
 
 const app = express();
 
-
-// Middleware to parse JSON requests
+// Middleware
 app.use(express.json());
 
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("MongoDB connected successfully"))
+  .catch((err) => {
+    console.error("MongoDB connection error:", err);
+    process.exit(1); // Exit on failure
+  });
 
-// Connect to MongoDB
-connectDB();
-
-// Define a simple route
-app.get('/', (req, res) => {
-    res.send('API is running...');
+// Default Route
+app.get("/", (req, res) => {
+  res.send("Clinic CMS API is running...");
 });
-// Start the server
+
+// Pharmacist Routes
+app.use("/api/pharmacist", pharmacistRoutes);
+
+// Lab Technician Routes
+app.use("/api/labtechnician", labTechnicianRoutes);
+
+// PORT
 const PORT = process.env.PORT || 8000;
 
-if (!process.env.PORT)
-{
-    console.error('PORT is not defined in .env file');
-    process.exit(1); // Exit process with failure
+if (!process.env.PORT) {
+  console.error("❌ PORT is not defined in .env file");
+  process.exit(1);
 }
+
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
+  console.log(`✅ Server is running on port ${PORT}`);
 });

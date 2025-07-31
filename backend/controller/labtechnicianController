@@ -1,0 +1,98 @@
+const LabTest = require("../model/labtechnician/labtest");
+const LabTestResult = require("../model/labtechnician/labtestresult");
+
+// Lab Test Management
+exports.addLabTest = async (req, res) => {
+  try {
+    const labTest = await LabTest.create(req.body);
+    res.status(201).json(labTest);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.updateLabTest = async (req, res) => {
+  try {
+    const updated = await LabTest.findOneAndUpdate(
+      { labTestId: req.params.labTestId },
+      req.body,
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getLabTestById = async (req, res) => {
+  try {
+    const test = await LabTest.findOne({ labTestId: req.params.labTestId });
+    res.json(test);
+  } catch (err) {
+    res.status(404).json({ error: "Lab Test not found" });
+  }
+};
+
+exports.listLabTests = async (req, res) => {
+  const tests = await LabTest.find();
+  res.json(tests);
+};
+
+exports.deactivateLabTest = async (req, res) => {
+  try {
+    const updated = await LabTest.findOneAndUpdate(
+      { labTestId: req.params.labTestId },
+      { isActive: false },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// Lab Test Result Management
+exports.recordLabTestResult = async (req, res) => {
+  try {
+    const updated = await LabTestResult.findOneAndUpdate(
+      { labPrescId: req.params.labTestPrescriptionId },
+      { results: req.body.results },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getLabTestResultByAppointment = async (req, res) => {
+  try {
+    const result = await LabTestResult.findOne({
+      appointmentId: req.params.appointmentId,
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(404).json({ error: "Result not found" });
+  }
+};
+
+exports.getLabTestResultsByDate = async (req, res) => {
+  const { startDate, endDate } = req.query;
+  const results = await LabTestResult.find({
+    date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+  });
+  res.json(results);
+};
+
+exports.deactivateLabTestPrescription = async (req, res) => {
+  try {
+    const result = await LabTestResult.findOneAndUpdate(
+      { labPrescId: req.params.labTestPrescriptionId },
+      { $set: { isActive: false } },
+      { new: true }
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

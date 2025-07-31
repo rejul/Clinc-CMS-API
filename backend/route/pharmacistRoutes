@@ -1,0 +1,28 @@
+const express = require("express");
+const router = express.Router();
+const pharmacistController = require("../controller/pharmacistController");
+
+// Medicine routes
+router.post("/medicines", pharmacistController.addMedicine);
+router.get("/medicines", pharmacistController.listMedicines);
+router.get("/medicines/:medicineId", pharmacistController.getMedicineById);
+router.put("/medicines/:medicineId", pharmacistController.updateMedicine);
+router.patch(
+  "/medicines/:medicineId/deactivate",
+  pharmacistController.deactivateMedicine
+);
+
+// Inventory routes
+router.post("/inventory", pharmacistController.addInventory);
+router.get("/inventory", pharmacistController.listInventory);
+router.get(
+  "/inventory/:medicineId",
+  pharmacistController.getInventoryByMedicine
+);
+router.put("/inventory/:medicineStockId", pharmacistController.updateInventory);
+router.patch(
+  "/inventory/:medicineStockId/flag",
+  pharmacistController.flagLowStock
+);
+
+module.exports = router;
