@@ -94,18 +94,24 @@ exports.getLabTestResultsByDate = async (req, res) => {
 
   // Validate startDate and endDate
   if (!startDate || !endDate) {
-    return res.status(400).json({ error: "Both startDate and endDate are required." });
+    return res
+      .status(400)
+      .json({ error: "Both startDate and endDate are required." });
   }
 
   const start = new Date(startDate);
   const end = new Date(endDate);
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
-    return res.status(400).json({ error: "Invalid date format. Use a valid date string." });
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Use a valid date string." });
   }
 
   if (start > end) {
-    return res.status(400).json({ error: "startDate cannot be later than endDate." });
+    return res
+      .status(400)
+      .json({ error: "startDate cannot be later than endDate." });
   }
 
   try {
@@ -114,7 +120,9 @@ exports.getLabTestResultsByDate = async (req, res) => {
     });
     res.json(results);
   } catch (err) {
-    res.status(500).json({ error: "An error occurred while fetching results." });
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching results." });
   }
 };
 
