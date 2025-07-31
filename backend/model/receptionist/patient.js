@@ -14,7 +14,6 @@ const PatientSchema = new mongoose.Schema({
     timestamps: true,
     autoIndex: true,
     versionKey: false, // Disable __v field
-    _id: true, // Keep _id for main documents
     toJSON: {
         transform: function(doc, ret) {
             delete ret._id; // Remove _id field in view

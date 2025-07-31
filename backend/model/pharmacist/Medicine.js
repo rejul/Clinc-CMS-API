@@ -9,6 +9,7 @@ const MedicineSchema = new mongoose.Schema({
   name: String,
   manufacturer: String,
   unit: String,
+  cost: Number,
   isActive: { type: Boolean, default: true }
 }, {
   timestamps: true,
