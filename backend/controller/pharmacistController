@@ -93,7 +93,7 @@ exports.listInventory = async (req, res) => {
 exports.flagLowStock = async (req, res) => {
   try {
     const inventory = await Inventory.findOneAndUpdate(
-      { inventoryId: req.params.medicineStockId },
+      { inventoryId: req.params.medicineId },
       { lowStockFlag: true },
       { new: true }
     );
