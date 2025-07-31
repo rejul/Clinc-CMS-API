@@ -13,11 +13,10 @@ const InventorySchema = new mongoose.Schema({
   timestamps: true,
   autoIndex: true,
   versionKey: false, // Disable __v field
-  id: false,         // hides virtual id getter (_id)
   toJSON: {
     transform: function(doc, ret) { 
-      delete ret._id; // Remove _id field
-      delete ret.__v; // Remove __v field
+      delete ret._id; // Remove _id field in view
+      delete ret.__v; // Remove __v field in view
       return ret;
     }
   }
