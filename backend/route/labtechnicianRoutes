@@ -1,27 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const controller = require("../controller/labtechnicianController");
-const {
-  validateLabTest,
-  validateLabTestResult,
-} = require("../validation/labtechnicianValidator");
 
 // Lab Test Management
-router.post("/labtests", validateLabTest, controller.addLabTest);
-router.put(
-  "/labtests/:labTestId",
-  validateLabTest,
-  controller.updateLabTest
-);
+router.post("/labtests", controller.addLabTest);
+router.put("/labtests/:labTestId", controller.updateLabTest);
 router.get("/labtests/:labTestId", controller.getLabTestById);
 router.get("/labtests", controller.listLabTests);
-router.patch(
-  "/labtests/:labTestId/deactivate",
-  controller.deactivateLabTest
-);
+router.patch("/labtests/:labTestId/deactivate", controller.deactivateLabTest);
 
 // Lab Test Prescription Management
-router.post("/labtests/results", validateLabTestResult, controller.createLabTestResult);
+router.post("/labtests/results", controller.createLabTestResult);
 router.get("/labtests/results", controller.getLabTestResultsByDate);
 router.get(
   "/labtests/results/appointment/:appointmentId",
@@ -29,7 +18,6 @@ router.get(
 );
 router.put(
   "/labtests/results/:labTestPrescriptionId",
-  validateLabTestResult,
   controller.recordLabTestResult
 );
 router.patch(
