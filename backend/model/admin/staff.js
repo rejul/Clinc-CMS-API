@@ -18,7 +18,7 @@ const StaffSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  roleId: { type: Number, ref: 'Role' },
+  roleId: { type: Number, ref: 'Role' }, //1-admin, 2-doctor, 3-receptionist, 4-labtechnician, 5-pharmacist
   isActive: { type: Boolean, default: true }
 }, { 
   timestamps: true,  // Automatically manage createdAt and updatedAt fields

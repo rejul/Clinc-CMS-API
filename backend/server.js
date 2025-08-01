@@ -2,6 +2,7 @@
 const express = require('express');
 const connectDB = require('./config/db');
 const dotenv = require('dotenv');
+const Role = require('./model/admin/role');
 
 // Load environment variables from .env file
 dotenv.config();
@@ -34,7 +35,7 @@ const pharmacistRoutes = require('./route/pharmacistRoute');
 
 
 // Use receptionist routes
-app.use('/api/admin', adminRoutes);
+app.use('/adminAPI', adminRoutes);
 app.use('/receptionistAPI', receptionistRoutes);
 app.use('/doctorAPI', doctorRoute);
 app.use('/labtechnicianAPI', labtechnicianRoutes);
@@ -47,7 +48,7 @@ app.use('/pharmacistAPI', pharmacistRoutes);
 
 //===============================================
 
-// Start the server
+// check env  and port
 const PORT = process.env.PORT || 8000;
 
 if (!process.env.PORT)
@@ -56,5 +57,13 @@ if (!process.env.PORT)
     process.exit(1); // Exit process with failure
 }
 app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
+
+
+
+//insert default roles
+app.listen(PORT, async () => {
+    await Role.insertDefaultRoles(); // Call the function to insert default roles
     console.log(`Server is running on port ${PORT}`);
 });

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 // Role Schema
 const RoleSchema = new mongoose.Schema({
@@ -24,8 +23,29 @@ const RoleSchema = new mongoose.Schema({
   }
 });
 
-// Add auto-increment plugin for roleId
-RoleSchema.plugin(AutoIncrement, { inc_field: 'roleId' });
+const Role = mongoose.model('Role', RoleSchema);
 
+// Insert all roles in DB if not present
+async function insertDefaultRoles() {
+  const defaultRoles = [
+    { roleId: 1, name: 'Admin', description: 'Administrator with full access' },
+    { roleId: 2, name: 'Doctor', description: 'Doctor with medical privileges' },
+    { roleId: 3, name: 'Receptionist', description: 'Receptionist with scheduling privileges' },
+    { roleId: 4, name: 'Lab Technician', description: 'Lab Technician with lab access' },
+    { roleId: 5, name: 'Pharmacist', description: 'Pharmacist with pharmacy access' }
+  ];
+
+  for (const role of defaultRoles) {
+    // Upsert: insert if not exists
+    await Role.updateOne(
+      { roleId: role.roleId },
+      { $setOnInsert: role },
+      { upsert: true }
+    );
+  }
+}
+
+Role.insertDefaultRoles = insertDefaultRoles;
 // Export the Role model
 module.exports = mongoose.model('Role', RoleSchema);
+module.exports = Role;

@@ -1,9 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const adminController = require('../controller/adminController');
-if (!adminController) {
-  console.log('Admin controller is not defined');
-}
+
 const {
   createStaffValidation,
   updateStaffValidation,
