@@ -1,8 +1,5 @@
 const consult = require('../model/doctor/consult.js');
 const medicinepre = require('../model/doctor/medicinepre.js');
-const patient = require('../model/Receptionist/patient.js');
-const doctor = require('../model/doctor/doctor.js');
-const appointment = require('../model/Receptionist/appointment.js');
 const labtestpre = require('../model/doctor/labtest.js');
 
 //*Consultation Notes*
