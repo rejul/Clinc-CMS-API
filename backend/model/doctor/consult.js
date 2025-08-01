@@ -8,9 +8,10 @@ const ConsultationSchema = new mongoose.Schema({
   appointmentId: { type: Number, ref: 'Appointment' },
   doctorId: { type: Number, ref: 'Doctor' },
   patientId: { type: Number, ref: 'Patient' },
+  prescriptionId:{ type: Number, ref: 'Prescription' },
+  consultationDate: { type: Date, default: Date.now },
   notes: String,
-  diagnosis: String,
-  medications: String 
+  diagnosis: String
 }, { 
   timestamps: true, // Automatically manage createdAt and updatedAt fields
   autoIndex: true, // Enable auto-indexing for better performance

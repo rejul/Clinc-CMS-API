@@ -1,7 +1,9 @@
 const consult = require('../model/doctor/consult.js');
-const labtestpre = require('../model/doctor/labtestpre.js');
 const medicinepre = require('../model/doctor/medicinepre.js');
 const patient = require('../model/Receptionist/patient.js');
+const doctor = require('../model/doctor/doctor.js');
+const appointment = require('../model/Receptionist/appointment.js');
+const labtestpre = require('../model/doctor/labtest.js');
 
 //*Consultation Notes*
 
@@ -136,24 +138,35 @@ exports.getMedicinePrescriptionHistoryByPatient = async (req, res) => {
     try {
         const { patientId } = req.params;
         const prescriptions = await medicinepre.find({ patientId: patientId })
-            .populate({ path: 'doctorId', model: 'Doctor', select: 'name specializationId' })
-            .populate({ path: 'appointmentId', model: 'Appointment', select: 'date time' });
+            .populate({ path: 'prescriptionId', model: 'MedicinePrescription', select: 'medicines dosage frequency' });
         if (prescriptions.length === 0) {
             return res.status(404).json({ message: 'No medicine prescriptions found for this patient' });
-        }
+        }   
         res.status(200).json({ prescriptions });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
-};
+};  
 
 // List Medicine Prescription History by Doctor: GET /api/prescriptions/medicine/history/doctor/{doctorId}
 exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
     try {
-        const { doctorId } = req.params;
+        const { doctorId } = req.params; // doctorId is the customId
         const prescriptions = await medicinepre.find({ doctorId: doctorId })
-            .populate({ path: 'patientId', model: 'Patient', select: 'name age dob' })
-            .populate({ path: 'appointmentId', model: 'Appointment', select: 'date time' });
+            .populate({
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name gender dob',
+                localField: 'patientId', // Local field in the prescription
+                foreignField: 'customId' // Foreign field in the Patient model
+            })
+            .populate({
+                path: 'appointmentId',
+                model: 'Appointment',
+                select: 'date time',
+                localField: 'appointmentId', // Local field in the prescription
+                foreignField: 'customId' // Foreign field in the Appointment model
+            });
         if (prescriptions.length === 0) {
             return res.status(404).json({ message: 'No medicine prescriptions found for this doctor' });
         }
@@ -162,7 +175,6 @@ exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
-
 
 
 
@@ -255,6 +267,34 @@ exports.getConsultationsByPatient = async (req, res) => {
     }
 };
 
+// List Consultation History by Doctor: GET /api/consultations/history/doctor/{doctorId}
+exports.getConsultationHistoryByDoctor = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+        const consultations = await consult.find({ doctorId: doctorId })
+            .populate({
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name gender dob',
+                localField: 'patientId',
+                foreignField: 'patientId'
+            })
+            .populate({
+                path: 'appointmentId',
+                model: 'Appointment',
+                select: 'date time',
+                localField: 'appointmentId',
+                foreignField: 'appointmentId'
+            });
+        if (consultations.length === 0) {
+            return res.status(404).json({ message: 'No consultation history found for this doctor' });
+        }
+        res.status(200).json({ consultations });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 // Get Consultation History by Appointment ID: GET /api/consultations/history/appointment/{appointmentId}
 exports.getConsultationHistoryByAppointmentId = async (req, res) => {
     try {
@@ -283,3 +323,144 @@ exports.getConsultationHistoryByAppointmentId = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+
+//Medicine Prescription History//
+
+
+// List Medicine Prescription History by Patient //GET /api/prescriptions/medicine/history/patient/{patientId}
+    exports.getMedicinePrescriptionHistoryByPatient = async (req, res) => {
+        try {
+            const { patientId } = req.params;
+            const prescriptions = await medicinepre.find({ patientId: patientId })
+            .populate({
+                path: 'doctorId',
+                model: 'Doctor',
+                select: 'name specializationId',
+                localField: 'doctorId',
+                foreignField: 'doctorId'
+            })
+            .populate({
+                path: 'appointmentId',
+                model: 'Appointment',
+                select: 'date time',
+                localField: 'appointmentId',
+                foreignField: 'appointmentId'
+            });
+        if (prescriptions.length === 0) {
+            return res.status(404).json({ message: 'No medicine prescription history found for this patient' });
+        }
+        res.status(200).json({ prescriptions });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+// Get Medicine Prescription History by Appointment ID: GET /api/prescriptions/medicine/history/appointment/{appointmentId}
+exports.getMedicinePrescriptionHistoryByAppointmentId = async (req, res) => {
+    try {
+        const { appointmentId } = req.params;
+        const prescriptions = await medicinepre.find({ appointmentId: appointmentId });
+        if (prescriptions.length === 0) {
+            return res.status(404).json({ message: 'No medicine prescriptions found for this appointment' });
+        }
+        res.status(200).json({ prescriptions });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// List Medicine Prescription History by Doctor: GET /api/prescriptions/medicine/history/doctor/{doctorId}
+exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
+    try {
+        const { doctorId } = req.params; // doctorId is the customId
+        const prescriptions = await medicinepre.find({ doctorId: doctorId })
+            .populate({
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name gender dob',
+                localField: 'patientId', // Local field in the prescription
+                foreignField: 'customId' // Foreign field in the Patient model
+            })
+            .populate({
+                path: 'appointmentId',
+                model: 'Appointment',
+                select: 'date time',
+                localField: 'appointmentId', // Local field in the prescription
+                foreignField: 'customId' // Foreign field in the Appointment model
+            });
+        if (prescriptions.length === 0) {
+            return res.status(404).json({ message: 'No medicine prescriptions found for this doctor' });
+        }
+        res.status(200).json({ prescriptions });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+//lab test
+
+// Add New Lab Test: POST /api/labtests 
+exports.addLabTest = async (req, res) => {
+    try {
+        const labTest = new labtestpre(req.body); // Assuming req.body contains customId and other fields
+        await labTest.save();
+        res.status(201).json({ message: 'Lab test added successfully', labTest });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Update Lab Test Details: PUT /api/labtests/{labTestId} 
+exports.updateLabTest = async (req, res) => {
+    try {
+        const { labTestId } = req.params; // labTestId is the customId
+        const updatedLabTest = await labtestpre.findOneAndUpdate({ customId: labTestId }, req.body, { new: true });
+        if (!updatedLabTest) {
+            return res.status(404).json({ message: 'Lab test not found' });
+        }
+        res.status(200).json({ message: 'Lab test updated successfully', updatedLabTest });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Get Lab Test by ID: GET /api/labtests/{labTestId} 
+exports.getLabTestById = async (req, res) => {
+    try {
+        const { labTestId } = req.params; // labTestId is the customId
+        const labTest = await labtestpre.findOne({ customId: labTestId });
+        if (!labTest) {
+            return res.status(404).json({ message: 'Lab test not found' });
+        }
+        res.status(200).json({ labTest });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// List All Lab Tests: GET /api/labtests 
+exports.listAllLabTests = async (req, res) => {
+    try {
+        const labTests = await labtestpre.find();
+        res.status(200).json({ labTests });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+// Deactivate Lab Test: PATCH /api/labtests/{labTestId}/deactivate
+exports.deactivateLabTest = async (req, res) => {
+    try {
+        const { labTestId } = req.params; // labTestId is the customId
+        const updatedLabTest = await labtestpre.findOneAndUpdate({ customId: labTestId }, { isActive: false }, { new: true });
+        if (!updatedLabTest) {
+            return res.status(404).json({ message: 'Lab test not found' });
+        }
+        res.status(200).json({ message: 'Lab test deactivated successfully', updatedLabTest });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
