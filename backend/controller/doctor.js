@@ -36,14 +36,25 @@ exports.getConsultationByAppointmentId = async (req, res) => {
         const { appointmentId } = req.params;
         const consultations = await consult.find({ appointmentId: appointmentId })
             .populate({
-                path: 'appointmentId',
-                model: 'Appointment',
-                select: 'patientId date time'
+            path: 'appointmentId',
+            model: 'Appointment',
+            select: 'patientId date time',
+            localField: 'appointmentId',
+            foreignField: 'appointmentId'
             })
             .populate({
-                path: 'doctorId',
-                model: 'Doctor',
-                select: 'qualifications specializationId'
+            path: 'doctorId',
+            model: 'Doctor',
+            select: 'qualifications specializationId',
+            localField: 'doctorId',
+            foreignField: 'doctorId'
+            })
+            .populate({
+            path: 'patientId',
+            model: 'Patient',
+            select: 'name gender dob',
+            localField: 'patientId',
+            foreignField: 'patientId'
             });
         if (consultations.length === 0) {
             return res.status(404).json({ message: 'No consultations found for this appointment' });
@@ -59,9 +70,27 @@ exports.getConsultationsByDoctor = async (req, res) => {
     try {
         const { doctorId } = req.params;
         const consultations = await consult.find({ doctorId: doctorId })
-            .populate({ path: 'patientId', model: 'Patient', select: 'name gender dob' })
-            .populate({ path: 'appointmentId', model: 'Appointment', select: 'date time' })
-            .populate({ path: 'doctorId', model: 'Doctor', select: 'name specializationId' });
+            .populate({
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name gender dob',
+                localField: 'patientId',
+                foreignField: 'patientId'
+            })
+            .populate({
+                path: 'appointmentId',
+                model: 'Appointment',
+                select: 'date time',
+                localField: 'appointmentId',
+                foreignField: 'appointmentId'
+            })
+            .populate({
+                path: 'doctorId',
+                model: 'Doctor',
+                select: 'name specializationId',
+                localField: 'doctorId',
+                foreignField: 'doctorId'
+            });
 
         if (consultations.length === 0) {
             return res.status(404).json({ message: 'No consultations found for this doctor' });
@@ -134,6 +163,9 @@ exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
     }
 };
 
+
+
+
 //*Lab Test Prescription *
 
 // Create Lab Test Prescription: POST /api/prescriptions/labtest 
@@ -189,7 +221,11 @@ exports.getLabTestPrescriptionsByPatient = async (req, res) => {
     }
 };
 
-// Consultation History 
+
+
+
+
+//*Consultation History* 
 
 // List Consultation History by Patient: GET /api/consultations/patient/{patientId} 
 exports.getConsultationsByPatient = async (req, res) => {
@@ -199,12 +235,16 @@ exports.getConsultationsByPatient = async (req, res) => {
             .populate({
                 path: 'doctorId',
                 model: 'Doctor',
-                select: 'name specializationId'
+                select: 'name specializationId',
+                localField: 'doctorId',
+                foreignField: 'doctorId'
             })
             .populate({
                 path: 'appointmentId',
                 model: 'Appointment',
-                select: 'date time'
+                select: 'date time',
+                localField: 'appointmentId',
+                foreignField: 'appointmentId'
             });
         if (consultations.length === 0) {
             return res.status(404).json({ message: 'No consultations found for this patient' });
@@ -220,8 +260,20 @@ exports.getConsultationHistoryByAppointmentId = async (req, res) => {
     try {
         const { appointmentId } = req.params;
         const consultation = await consult.findOne({ appointmentId: appointmentId })
-            .populate({ path: 'patientId', model: 'Patient', select: 'name age dob' })
-            .populate({ path: 'doctorId', model: 'Doctor', select: 'name specializationId' });
+            .populate({
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name age dob',
+                localField: 'patientId',
+                foreignField: 'patientId'
+            })
+            .populate({
+                path: 'doctorId',
+                model: 'Doctor',
+                select: 'name specializationId',
+                localField: 'doctorId',
+                foreignField: 'doctorId'
+            });
 
         if (!consultation) {
             return res.status(404).json({ message: 'Consultation not found for this appointment' });
