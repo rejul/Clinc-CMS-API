@@ -1,6 +1,6 @@
-const Patient = require("../../model/receptionist/patient");
-const Billing = require("../../model/receptionist/billing");
-const Appointment = require("../../model/receptionist/appointment");
+const Patient = require("../model/receptionist/patient");
+const Billing = require("../model/receptionist/billing");
+const Appointment = require("../model/receptionist/appointment");
 
 // ==================== PATIENT MANAGEMENT ====================
 

@@ -252,7 +252,7 @@ exports.updateSpecialization = async (req, res) => {
   try {
     const specialization = await Specialization.findOneAndUpdate(
       { specializationId: req.params.specializationId },
-      req.body,
+      { $set: req.body },
       { new: true }
     );
     if (!specialization) return res.status(404).json({ error: 'Specialization not found' });

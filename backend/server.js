@@ -20,6 +20,28 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
+//================================================================
+// Import routes
+
+const receptionistRoutes = require('./route/receptionistRoutes');
+// const adminRoutes = require('./routes/adminRoutes');
+const doctorRoutes = require('./route/doctorRoute');
+
+
+
+
+
+// Use receptionist routes
+//app.use('/api/receptionist', receptionistRoutes);
+// app.use('/api/admin', adminRoutes);
+// app.use('/api/doctor', doctorRoutes);
+
+
+
+
+
+//===============================================
+
 // Start the server
 const PORT = process.env.PORT || 8000;
 
