@@ -1,0 +1,140 @@
+const LabTest = require("../model/labtechnician/labtest");
+const LabTestResult = require("../model/labtechnician/labtestresult");
+
+// Lab Test Management
+exports.addLabTest = async (req, res) => {
+  try {
+    const labTest = await LabTest.create(req.body);
+    res.status(201).json(labTest);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.updateLabTest = async (req, res) => {
+  try {
+    const updated = await LabTest.findOneAndUpdate(
+      { labTestId: req.params.labTestId },
+      req.body,
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getLabTestById = async (req, res) => {
+  try {
+    const test = await LabTest.findOne({ labTestId: req.params.labTestId });
+    res.json(test);
+  } catch (err) {
+    res.status(404).json({ error: "Lab Test not found" });
+  }
+};
+
+exports.listLabTests = async (req, res) => {
+  try {
+    const tests = await LabTest.find();
+    res.json(tests);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to retrieve lab tests" });
+  }
+};
+
+exports.deactivateLabTest = async (req, res) => {
+  try {
+    const updated = await LabTest.findOneAndUpdate(
+      { labTestId: req.params.labTestId },
+      { isActive: false },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+// Lab Test Result Management
+exports.createLabTestResult = async (req, res) => {
+  try {
+    const labTestResult = await LabTestResult.create(req.body);
+    res.status(201).json(labTestResult);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.recordLabTestResult = async (req, res) => {
+  try {
+    const updated = await LabTestResult.findOneAndUpdate(
+      { labPrescId: req.params.labTestPrescriptionId },
+      { results: req.body.results },
+      { new: true }
+    );
+    res.json(updated);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};
+
+exports.getLabTestResultByAppointment = async (req, res) => {
+  try {
+    const result = await LabTestResult.findOne({
+      appointmentId: req.params.appointmentId,
+    });
+    res.json(result);
+  } catch (err) {
+    res.status(404).json({ error: "Result not found" });
+  }
+};
+
+exports.getLabTestResultsByDate = async (req, res) => {
+  const { startDate, endDate } = req.query;
+
+  // Validate startDate and endDate
+  if (!startDate || !endDate) {
+    return res
+      .status(400)
+      .json({ error: "Both startDate and endDate are required." });
+  }
+
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+
+  if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+    return res
+      .status(400)
+      .json({ error: "Invalid date format. Use a valid date string." });
+  }
+
+  if (start > end) {
+    return res
+      .status(400)
+      .json({ error: "startDate cannot be later than endDate." });
+  }
+
+  try {
+    const results = await LabTestResult.find({
+      date: { $gte: start, $lte: end },
+    });
+    res.json(results);
+  } catch (err) {
+    res
+      .status(500)
+      .json({ error: "An error occurred while fetching results." });
+  }
+};
+
+exports.deactivateLabTestPrescription = async (req, res) => {
+  try {
+    const result = await LabTestResult.findOneAndUpdate(
+      { labPrescId: req.params.labTestPrescriptionId },
+      { $set: { isActive: false } },
+      { new: true }
+    );
+    res.json(result);
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
+};

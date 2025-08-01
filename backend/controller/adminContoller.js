@@ -72,18 +72,64 @@ exports.deleteStaff = async (req, res) => {
 };
 
 // Staff login
+const jwt = require('jsonwebtoken');
+
 exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
-    const staff = await Staff.findOne({ email });
-    if (!staff) return res.status(404).json({ error: 'Invalid credentials' });
+
+    const staff = await Staff.findOne({ email }).populate({
+  path: 'roleId',
+  model: 'Role',
+  localField: 'roleId',
+  foreignField: 'roleId',
+  justOne: true
+});
+
+
+    if (!staff) {
+      return res.status(404).json({ error: 'Invalid credentials' });
+    }
+
+    if (!staff.isActive) {
+      return res.status(403).json({ error: 'Account is deactivated' });
+    }
+
+    if (staff.roleId.name !== 'Admin') {
+      return res.status(403).json({ error: 'Access denied: not an Admin' });
+    }
+
     const isMatch = await staff.matchPassword(password);
-    if (!isMatch) return res.status(401).json({ error: 'Invalid credentials' });
-    res.json(staff);
+    if (!isMatch) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+
+    const token = jwt.sign(
+      {
+        staffId: staff.staffId,
+        role: staff.roleId.name,
+        email: staff.email
+      },
+      process.env.JWT_SECRET || 'default_secret_key',
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({
+      message: 'Login successful',
+      token,
+      staff: {
+        staffId: staff.staffId,
+        name: staff.name,
+        email: staff.email,
+        role: staff.roleId.name
+      }
+    });
+
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // --- ROLE MANAGEMENT ---
 const Specialization = require('../model/admin/specialization');
@@ -252,7 +298,7 @@ exports.updateSpecialization = async (req, res) => {
   try {
     const specialization = await Specialization.findOneAndUpdate(
       { specializationId: req.params.specializationId },
-      { $set: req.body },
+      req.body,
       { new: true }
     );
     if (!specialization) return res.status(404).json({ error: 'Specialization not found' });
