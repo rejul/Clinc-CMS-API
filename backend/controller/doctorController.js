@@ -2,7 +2,7 @@ const consult = require('../model/doctor/consult.js');
 const medicinepre = require('../model/doctor/medicinepre.js');
 const labtestpre = require('../model/labtechnician/labtest.js');
 
-//*================Consultation Notes==========================*
+//================Consultation Notes==========================
 
 // Add Consultation Note: POST /api/consultations 
 exports.addConsultationNote = async (req, res) => {
@@ -100,7 +100,7 @@ exports.getConsultationsByDoctor = async (req, res) => {
     }
 };
 
-//*===========================Medicine Prescription====================== *
+//===========================Medicine Prescription====================== 
 
 // Update Medicine Prescription: PUT /api/prescriptions/medicine/{prescriptionId}
 exports.updateMedicinePrescription = async (req, res) => {
@@ -175,7 +175,7 @@ exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
 
 
 
-//*========================Lab Test Prescription *=====================
+//========================Lab Test Prescription =====================
 
 // Create Lab Test Prescription: POST /api/prescriptions/labtest 
 exports.createLabTestPrescription = async (req, res) => {
@@ -234,7 +234,7 @@ exports.getLabTestPrescriptionsByPatient = async (req, res) => {
 
 
 
-//*=======================Consultation History===============================* 
+//=======================Consultation History===============================//
 
 // List Consultation History by Patient: GET /api/consultations/patient/{patientId} 
 exports.getConsultationsByPatient = async (req, res) => {
@@ -412,18 +412,9 @@ exports.getMedicinePrescriptionHistoryByAppointmentId = async (req, res) => {
 };
 
 
+//==========================Lab Test Prescription History==============================//
 
 
-
-
-
-
-
-
-
-
-
-//==================lab test prescribe==================
 
 // Add New Lab Test: POST /api/labtests 
 exports.addLabTest = async (req, res) => {
