@@ -1,4 +1,78 @@
+const Patient = require("../../model/receptionist/patient");
+const Billing = require("../../model/receptionist/billing");
 const Appointment = require("../../model/receptionist/appointment");
+
+// ==================== PATIENT MANAGEMENT ====================
+
+// Register Patient
+exports.createPatient = async (req, res) => {
+  try {
+    const patient = new Patient(req.body);
+    await patient.save();
+    res.status(201).json(patient);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Update Patient Info
+exports.updatePatient = async (req, res) => {
+  try {
+    const patient = await Patient.findOneAndUpdate(
+      { patientId: req.params.patientId },
+      req.body,
+      { new: true }
+    );
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+    res.json(patient);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get Patient by ID
+exports.getPatientById = async (req, res) => {
+  try {
+    const patient = await Patient.findOne({ patientId: req.params.patientId });
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+    res.json(patient);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// List All Patients
+exports.listPatients = async (req, res) => {
+  try {
+    const patients = await Patient.find();
+    res.json(patients);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Deactivate Patient
+exports.deactivatePatient = async (req, res) => {
+  try {
+    const patient = await Patient.findOneAndUpdate(
+      { patientId: req.params.patientId },
+      { isActive: false },
+      { new: true }
+    );
+    if (!patient) {
+      return res.status(404).json({ error: "Patient not found" });
+    }
+    res.json(patient);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ==================== APPOINTMENT MANAGEMENT ====================
 
 // Schedule Appointment
 exports.createAppointment = async (req, res) => {
@@ -173,6 +247,76 @@ exports.getAppointmentsByStatus = async (req, res) => {
         justOne: true,
       });
     res.json(appointments);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// ==================== BILLING MANAGEMENT ====================
+
+// Generate Bill
+exports.createBilling = async (req, res) => {
+  try {
+    const bill = new Billing(req.body);
+    await bill.save();
+    res.status(201).json(bill);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Update Bill
+exports.updateBilling = async (req, res) => {
+  try {
+    const bill = await Billing.findOneAndUpdate(
+      { appointmentId: req.params.appointmentId },
+      req.body,
+      { new: true }
+    );
+    if (!bill) {
+      return res.status(404).json({ error: "Billing record not found" });
+    }
+    res.json(bill);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Get Bill by Appointment
+exports.getBillingByAppointment = async (req, res) => {
+  try {
+    const bill = await Billing.findOne({
+      appointmentId: req.params.appointmentId,
+    }).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
+    });
+    if (!bill) {
+      return res.status(404).json({ error: "Billing record not found" });
+    }
+    res.json(bill);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// List Bills by Date Range
+exports.getBillingsByDateRange = async (req, res) => {
+  try {
+    const { startDate, endDate } = req.query;
+    const bills = await Billing.find({
+      billingDate: { $gte: new Date(startDate), $lte: new Date(endDate) },
+    }).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
+    });
+    res.json(bills);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
