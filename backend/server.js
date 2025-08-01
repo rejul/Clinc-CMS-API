@@ -23,18 +23,23 @@ app.get('/', (req, res) => {
 //================================================================
 // Import routes
 
-const receptionistRoutes = require('./route/receptionistRoutes');
-// const adminRoutes = require('./routes/adminRoutes');
-const doctorRoutes = require('./route/doctorRoute');
+const receptionistRoutes = require('./route/receptionistRoute');
+const adminRoutes = require('./route/adminRoute');
+const doctorRoute = require('./route/doctorRoute');
+const labtechnicianRoutes = require('./route/labtechnicianRoute'); // changed to camelCase for consistency
+const pharmacistRoutes = require('./route/pharmacistRoute');
 
 
 
 
 
 // Use receptionist routes
-//app.use('/api/receptionist', receptionistRoutes);
-// app.use('/api/admin', adminRoutes);
-// app.use('/api/doctor', doctorRoutes);
+app.use('/api/admin', adminRoutes);
+app.use('/receptionistAPI', receptionistRoutes);
+app.use('/doctorAPI', doctorRoute);
+app.use('/labtechnicianAPI', labtechnicianRoutes);
+app.use('/pharmacistAPI', pharmacistRoutes);
+
 
 
 

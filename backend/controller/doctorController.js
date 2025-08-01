@@ -100,7 +100,20 @@ exports.getConsultationsByDoctor = async (req, res) => {
     }
 };
 
-//===========================Medicine Prescription====================== 
+//===========================Medicine Prescription ====================== 
+
+
+// Create Medicine Prescription: POST /api/prescriptions/medicine
+exports.createMedicinePrescription = async (req, res) => {
+    try {
+        const newPrescription = new medicinepre(req.body); // Create a new instance of the medicinepre model
+        await newPrescription.save(); // Save the new prescription to the database
+        res.status(201).json({ message: 'Medicine prescription created successfully', newPrescription });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
 
 // Update Medicine Prescription: PUT /api/prescriptions/medicine/{prescriptionId}
 exports.updateMedicinePrescription = async (req, res) => {
@@ -116,7 +129,7 @@ exports.updateMedicinePrescription = async (req, res) => {
     }
 };
 
-// List Prescriptions by Appointment: GET /api/prescriptions/medicine/appointment/{appointmentId}
+// Get Prescription by Appointment ID: GET /api/prescriptions/medicine/appointment/{appointmentId} 
 exports.getMedicinePrescriptionByAppointmentId = async (req, res) => {
     try {
         const { appointmentId } = req.params;
@@ -129,6 +142,25 @@ exports.getMedicinePrescriptionByAppointmentId = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+// List Prescriptions by Patient: GET /api/prescriptions/medicine/patient/{patientId} 
+exports.getMedicinePrescriptionsByPatient = async (req, res) => {
+    try {
+        const { patientId } = req.params;
+        const prescriptions = await medicinepre.find({ patientId: patientId });
+        if (prescriptions.length === 0) {
+            return res.status(404).json({ message: 'No medicine prescriptions found for this patient' });
+        }
+        res.status(200).json({ prescriptions });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+};
+
+
+
+
+//======================medicine prescription history=======================
 
 // List Medicine Prescription History by Patient: GET /api/prescriptions/medicine/history/patient/{patientId}
 exports.getMedicinePrescriptionHistoryByPatient = async (req, res) => {
@@ -396,8 +428,7 @@ exports.getMedicinePrescriptionHistoryByDoctor = async (req, res) => {
     }
 };
 
-//Get Medicine Prescription History by Appointment ID 
-//GET /api/prescriptions/medicine/history/appointment/{appointmentId} 
+//Get Medicine Prescription History by Appointment ID //GET /api/prescriptions/medicine/history/appointment/{appointmentId} 
 exports.getMedicinePrescriptionHistoryByAppointmentId = async (req, res) => {
     try {
         const { appointmentId } = req.params;
@@ -410,6 +441,8 @@ exports.getMedicinePrescriptionHistoryByAppointmentId = async (req, res) => {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
 };
+
+
 
 
 //==========================Lab Test Prescription History==============================//

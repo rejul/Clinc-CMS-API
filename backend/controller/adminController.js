@@ -1,5 +1,12 @@
 const Staff = require('../model/admin/staff');
 const Role = require('../model/admin/role');
+//check impots
+if (!Role) {
+  console.log('Role is undefined');
+}
+if (!Staff) {
+  console.log('Satff is undefined');
+}
 
 // Create a new staff (admin)
 exports.createStaff = async (req, res) => {
