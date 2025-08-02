@@ -21,6 +21,8 @@ connectDB();
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
+
+//Routes
 //================================================================
 // Import routes
 
@@ -29,15 +31,18 @@ const adminRoutes = require('./route/adminRoute');
 const doctorRoute = require('./route/doctorRoute');
 const labtechnicianRoutes = require('./route/labtechnicianRoute'); // changed to camelCase for consistency
 const pharmacistRoutes = require('./route/pharmacistRoute');
+const authRoute = require('./route/authRoute');
+const authMiddleware = require('./middleware/auth');
 
 
 
 
 
 // Use receptionist routes
+app.use('/authAPI', authRoute);
 app.use('/adminAPI', adminRoutes);
 app.use('/receptionistAPI', receptionistRoutes);
-app.use('/doctorAPI', doctorRoute);
+app.use('/doctorAPI', authMiddleware, doctorRoute);
 app.use('/labtechnicianAPI', labtechnicianRoutes);
 app.use('/pharmacistAPI', pharmacistRoutes);
 
