@@ -41,13 +41,16 @@ const authorize = require('./middleware/authorize');
 
 
 
-// Use receptionist routes
+// Use receptionist routes 
+//Open routes for testing
 app.use('/authAPI', authRoute);
+
+//Protected routes
 app.use('/adminAPI',auth,authorize([1]), adminRoutes);
-app.use('/receptionistAPI', receptionistRoutes);
+app.use('/receptionistAPI',auth,authorize([1,3]), receptionistRoutes);
 app.use('/doctorAPI',auth,authorize([1,2]), doctorRoute);
-app.use('/labtechnicianAPI', labtechnicianRoutes);
-app.use('/pharmacistAPI', pharmacistRoutes);
+app.use('/labtechnicianAPI',auth,authorize([1,4]), labtechnicianRoutes);
+app.use('/pharmacistAPI',auth,authorize([1,5]), pharmacistRoutes);
 
 
 
