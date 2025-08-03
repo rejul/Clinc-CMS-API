@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
-// Specialization Schema
+// Doctor Specialization Schema
 const SpecializationSchema = new mongoose.Schema({
   specializationId: { type: Number, unique: true },
   name: String,

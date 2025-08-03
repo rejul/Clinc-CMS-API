@@ -12,6 +12,7 @@ const app = express();
 
 // Middleware to parse JSON requests
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 
 // Connect to MongoDB
@@ -33,6 +34,8 @@ const labtechnicianRoutes = require('./route/labtechnicianRoute'); // changed to
 const pharmacistRoutes = require('./route/pharmacistRoute');
 const authRoute = require('./route/authRoute');
 const authMiddleware = require('./middleware/auth');
+const auth = require('./middleware/auth');
+const authorize = require('./middleware/authorize');
 
 
 
@@ -40,9 +43,9 @@ const authMiddleware = require('./middleware/auth');
 
 // Use receptionist routes
 app.use('/authAPI', authRoute);
-app.use('/adminAPI', adminRoutes);
+app.use('/adminAPI',auth,authorize([1]), adminRoutes);
 app.use('/receptionistAPI', receptionistRoutes);
-app.use('/doctorAPI', authMiddleware, doctorRoute);
+app.use('/doctorAPI',auth,authorize([1,2]), doctorRoute);
 app.use('/labtechnicianAPI', labtechnicianRoutes);
 app.use('/pharmacistAPI', pharmacistRoutes);
 

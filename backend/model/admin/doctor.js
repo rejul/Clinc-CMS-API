@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
+//Doctor Qualification Schema
 const DoctorSchema = new mongoose.Schema({
   doctorId: { type: Number, unique: true },
   staffId: { type: Number, ref: 'Staff' },

@@ -4,8 +4,7 @@ const express = require('express');
 const router = express.Router();
 const doctorController = require('../controller/doctorController.js');
 const {
-    validateAddConsultationNote,
-    validateUpdateConsultationNote,
+    validateConsultation,
     validateCreateMedicinePrescription,
     validateUpdateMedicinePrescription,
     validateCreateLabTestPrescription,
@@ -19,16 +18,16 @@ const {
 
 //======================= Consultation Notes =======================
 // Add Consultation Note: POST /api/consultations
-router.post('/consultations', validateAddConsultationNote, doctorController.addConsultationNote);
+router.post('/consultations', validateConsultation, doctorController.addConsultationNote);
 
 // Update Consultation Note: PUT /api/consultations/{consultationId}
-router.put('/consultations/:consultationId', validateUpdateConsultationNote, doctorController.updateConsultationNote);
+router.put('/consultations/:consultationId', validateConsultation, doctorController.updateConsultationNote);
 
 // Get Consultation Note by Appointment ID: GET /api/consultations/appointment/{appointmentId}
 router.get('/consultations/appointment/:appointmentId', doctorController.getConsultationByAppointmentId);
 
 // List Consultation Notes by Doctor: GET /api/consultations/doctor/{doctorId}
-router.get('/consultations/doctor/:doctorId', validateGetConsultationsByDoctor, doctorController.getConsultationsByDoctor);
+router.get('/consultations/doctor/:doctorId', doctorController.getConsultationsByDoctor);
 
 //======================= Medicine Prescriptions =======================
 // // Create Medicine Prescription: POST /api/prescriptions/medicine
@@ -48,7 +47,7 @@ router.get('/prescriptions/medicine/patient/:patientId', validateGetMedicinePres
 router.post('/prescriptions/labtest', validateCreateLabTestPrescription, doctorController.createLabTestPrescription);
 
 // Update Lab Test Prescription: PUT /api/prescriptions/labtest/{prescriptionId}
-router.put('/prescriptions/labtest/:prescriptionId', validateUpdateLabTestPrescription, doctorController.updateLabTestPrescription);
+router.put('/prescriptions/labtest/:labPrescId', validateUpdateLabTestPrescription, doctorController.updateLabTestPrescription);
 
 // Get Lab Test Prescription by Appointment ID: GET /api/prescriptions/labtest/appointment/{appointmentId}
 router.get('/prescriptions/labtest/appointment/:appointmentId', doctorController.getLabTestPrescriptionByAppointmentId);

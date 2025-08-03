@@ -4,7 +4,8 @@ const bcrypt = require('bcryptjs');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 // Staff Schema
-// This schema defines the structure for staff members in the clinic management system.
+// This schema defines the structure for staff members in the clinic management system. 
+// Admin, doctor, receptionist, lab technician, and pharmacist are all types of staff that can be managed through this schema.
 const StaffSchema = new mongoose.Schema({
   staffId: { type: Number, unique: true },
   name: String,
@@ -18,7 +19,12 @@ const StaffSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  roleId: { type: Number, ref: 'Role' }, //1-admin, 2-doctor, 3-receptionist, 4-labtechnician, 5-pharmacist
+  roleId: { 
+    type: Number,
+    ref: 'Role' ,
+    required: true
+  }, // Reference to the Role model
+
   isActive: { type: Boolean, default: true }
 }, { 
   timestamps: true,  // Automatically manage createdAt and updatedAt fields
@@ -26,7 +32,7 @@ const StaffSchema = new mongoose.Schema({
   toJSON: { 
     transform: function(doc, ret) {
       // Remove _id, __v, and password from the JSON output
-      delete ret._id;
+      //delete ret._id;
       delete ret.__v;
       delete ret.password;
       return ret;

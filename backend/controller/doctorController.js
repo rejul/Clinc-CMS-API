@@ -1,6 +1,6 @@
 const consult = require('../model/doctor/consult.js');
 const medicinepre = require('../model/doctor/medicinepre.js');
-const labtestpre = require('../model/labtechnician/labtest.js');
+const labtestpre = require('../model/doctor/labtestpre.js');
 
 //================Consultation Notes==========================
 
@@ -18,7 +18,8 @@ exports.addConsultationNote = async (req, res) => {
 // Update Consultation Note: PUT /api/consultations/{consultationId} 
 exports.updateConsultationNote = async (req, res) => {
     try {
-        const { consultationId } = req.params;
+        let { consultationId } = req.params;
+        consultationId = Number(consultationId);
         const updatedConsultation = await consult.findOneAndUpdate({ consultationId: consultationId }, req.body, { new: true });
         if (!updatedConsultation) {
             return res.status(404).json({ message: 'Consultation note not found' });
@@ -32,28 +33,28 @@ exports.updateConsultationNote = async (req, res) => {
 // Get Consultation Note by Appointment ID: GET /api/consultations/appointment/{appointmentId}
 exports.getConsultationByAppointmentId = async (req, res) => {
     try {
-        const { appointmentId } = req.params;
+        const appointmentId = Number(req.params.appointmentId);
         const consultations = await consult.find({ appointmentId: appointmentId })
             .populate({
-            path: 'appointmentId',
-            model: 'Appointment',
-            select: 'patientId date time',
-            localField: 'appointmentId',
-            foreignField: 'appointmentId'
+                path: 'doctorId',
+                model: 'Doctor',
+                select: 'qualifications specializationId',
+                localField: 'doctorId',
+                foreignField: 'doctorId'
             })
             .populate({
-            path: 'doctorId',
-            model: 'Doctor',
-            select: 'qualifications specializationId',
-            localField: 'doctorId',
-            foreignField: 'doctorId'
+                path: 'patientId',
+                model: 'Patient',
+                select: 'name gender dob',
+                localField: 'patientId',
+                foreignField: 'patientId'
             })
             .populate({
-            path: 'patientId',
-            model: 'Patient',
-            select: 'name gender dob',
-            localField: 'patientId',
-            foreignField: 'patientId'
+                path: 'prescriptionId',
+                model: 'MedicinePrescription', // prescription table/model
+                select: 'medicines dosage frequency',
+                localField: 'prescriptionId',
+                foreignField: 'prescriptionId'
             });
         if (consultations.length === 0) {
             return res.status(404).json({ message: 'No consultations found for this appointment' });
@@ -67,7 +68,7 @@ exports.getConsultationByAppointmentId = async (req, res) => {
 // List Consultation Notes by Doctor: GET /api/consultations/doctor/{doctorId}
 exports.getConsultationsByDoctor = async (req, res) => {
     try {
-        const { doctorId } = req.params;
+        const doctorId = Number(req.params.doctorId);
         const consultations = await consult.find({ doctorId: doctorId })
             .populate({
                 path: 'patientId',
@@ -89,6 +90,13 @@ exports.getConsultationsByDoctor = async (req, res) => {
                 select: 'name specializationId',
                 localField: 'doctorId',
                 foreignField: 'doctorId'
+            })
+            .populate({
+                path: 'prescriptionId',
+                model: 'MedicinePrescription',
+                select: 'medicines dosage frequency',
+                localField: 'prescriptionId',
+                foreignField: 'prescriptionId'
             });
 
         if (consultations.length === 0) {
@@ -132,7 +140,7 @@ exports.updateMedicinePrescription = async (req, res) => {
 // Get Prescription by Appointment ID: GET /api/prescriptions/medicine/appointment/{appointmentId} 
 exports.getMedicinePrescriptionByAppointmentId = async (req, res) => {
     try {
-        const { appointmentId } = req.params;
+        const appointmentId  = Number(req.params.appointmentId);
         const prescriptions = await medicinepre.find({ appointmentId: appointmentId });
         if (prescriptions.length === 0) {
             return res.status(404).json({ message: 'No medicine prescriptions found for this appointment' });
@@ -224,7 +232,11 @@ exports.createLabTestPrescription = async (req, res) => {
 exports.updateLabTestPrescription = async (req, res) => {
     try {
         const { prescriptionId } = req.params;
-        const updatedPrescription = await labtestpre.findOneAndUpdate({ prescriptionId: prescriptionId }, req.body, { new: true });
+        const updatedPrescription = await labtestpre.findOneAndUpdate(
+            { prescriptionId: prescriptionId },
+            { $set: req.body },
+            { new: true }
+        );
         if (!updatedPrescription) {
             return res.status(404).json({ message: 'Lab test prescription not found' });
         }
@@ -463,12 +475,16 @@ exports.addLabTest = async (req, res) => {
 // Update Lab Test Details: PUT /api/labtests/{labTestId} 
 exports.updateLabTest = async (req, res) => {
     try {
-        const { labTestId } = req.params; // labTestId is the customId
-        const updatedLabTest = await labtestpre.findOneAndUpdate({ customId: labTestId }, req.body, { new: true });
+        const { labPrescId } = req.params; // labPrescId is the unique identifier
+        const updatedLabTest = await labtestpre.findOneAndUpdate(
+            { labPrescId: Number(labPrescId) },
+            req.body,
+            { new: true }
+        );
         if (!updatedLabTest) {
-            return res.status(404).json({ message: 'Lab test not found' });
+            return res.status(404).json({ message: 'Lab test prescription not found' });
         }
-        res.status(200).json({ message: 'Lab test updated successfully', updatedLabTest });
+        res.status(200).json({ message: 'Lab test prescription updated successfully', updatedLabTest });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error: error.message });
     }
