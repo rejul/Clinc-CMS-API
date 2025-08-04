@@ -1,4 +1,5 @@
 const { body, param, query } = require("express-validator");
+const { runValidations } = require("./error");
 
 // ==================== PATIENT VALIDATION ====================
 
@@ -25,8 +26,8 @@ exports.validateCreatePatient = [
     .trim()
     .notEmpty()
     .withMessage("Phone number is required")
-    .matches(/^[\+]?[1-9][\d]{0,15}$/)
-    .withMessage("Please provide a valid phone number"),
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage("Phone number must start with 6-9 and be exactly 10 digits"),
 
   body("gender")
     .trim()
@@ -49,6 +50,7 @@ exports.validateCreatePatient = [
       }
       return true;
     }),
+  runValidations,
 ];
 
 // Validate patient update
@@ -73,8 +75,8 @@ exports.validateUpdatePatient = [
   body("phone")
     .optional()
     .trim()
-    .matches(/^[\+]?[1-9][\d]{0,15}$/)
-    .withMessage("Please provide a valid phone number"),
+    .matches(/^[6-9]\d{9}$/)
+    .withMessage("Phone number must start with 6-9 and be exactly 10 digits"),
 
   body("gender")
     .optional()
@@ -95,6 +97,7 @@ exports.validateUpdatePatient = [
       }
       return true;
     }),
+  runValidations,
 ];
 
 // Validate patient ID parameter

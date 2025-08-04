@@ -321,3 +321,66 @@ exports.getBillingsByDateRange = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// Get Bill by Billing ID
+exports.getBillingById = async (req, res) => {
+  try {
+    const bill = await Billing.findOne({
+      billingId: parseInt(req.params.billingId),
+    }).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
+    });
+    if (!bill) {
+      return res.status(404).json({ error: "Billing record not found" });
+    }
+    res.json(bill);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Update Billing Appointment ID (for fixing existing records)
+exports.updateBillingAppointmentId = async (req, res) => {
+  try {
+    const { billingId, appointmentId } = req.body;
+
+    if (!billingId || !appointmentId) {
+      return res.status(400).json({
+        error: "Both billingId and appointmentId are required",
+      });
+    }
+
+    // Check if appointment exists
+    const appointment = await Appointment.findOne({
+      appointmentId: appointmentId,
+    });
+    if (!appointment) {
+      return res.status(404).json({
+        error: "Appointment not found. Please create an appointment first.",
+      });
+    }
+
+    const bill = await Billing.findOneAndUpdate(
+      { billingId: billingId },
+      { appointmentId: appointmentId },
+      { new: true }
+    ).populate({
+      path: "appointmentId",
+      model: "Appointment",
+      localField: "appointmentId",
+      foreignField: "appointmentId",
+      justOne: true,
+    });
+
+    if (!bill) {
+      return res.status(404).json({ error: "Billing record not found" });
+    }
+    res.json(bill);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
