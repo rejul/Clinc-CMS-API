@@ -19,11 +19,7 @@ const {
 // ==================== PATIENT ROUTES ====================
 
 // Patient Endpoints
-router.post(
-  "/patients",
-  validateCreatePatient,
-  receptionistCtrl.createPatient
-);
+router.post("/patients", validateCreatePatient, receptionistCtrl.createPatient);
 router.put(
   "/patients/:patientId",
   validateUpdatePatient,
@@ -88,11 +84,7 @@ router.patch(
 // ==================== BILLING ROUTES ====================
 
 // Billing Endpoints
-router.post(
-  "/billing",
-  validateCreateBilling,
-  receptionistCtrl.createBilling
-);
+router.post("/billing", validateCreateBilling, receptionistCtrl.createBilling);
 router.put(
   "/billing/:appointmentId",
   validateUpdateBilling,
@@ -102,6 +94,11 @@ router.get(
   "/billing/:appointmentId",
   validateAppointmentId,
   receptionistCtrl.getBillingByAppointment
+);
+router.get("/billing/id/:billingId", receptionistCtrl.getBillingById);
+router.put(
+  "/billing/update-appointment",
+  receptionistCtrl.updateBillingAppointmentId
 );
 router.get(
   "/billing",
