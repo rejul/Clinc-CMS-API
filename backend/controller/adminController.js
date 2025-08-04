@@ -1,5 +1,5 @@
 const Staff = require('../model/admin/staff');
-const Role = require('../model/admin/role');
+const {Role} = require('../model/admin/role');
 
 // Create a new staff (admin)
 exports.createStaff = async (req, res) => {
