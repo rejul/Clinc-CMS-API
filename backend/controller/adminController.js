@@ -133,7 +133,7 @@ exports.login = async (req, res) => {
 
 // --- ROLE MANAGEMENT ---
 const Specialization = require('../model/admin/specialization');
-const {Doctor} = require('../model/admin/doctor');
+const Doctor = require('../model/admin/doctor');
 
 // Create Role
 exports.createRole = async (req, res) => {

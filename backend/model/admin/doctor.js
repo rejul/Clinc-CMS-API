@@ -20,34 +20,7 @@ const DoctorSchema = new mongoose.Schema({
   }
 });
 
-// ✅ Plugin must be added **after** the schema is defined
+//Schema plugin for auto-incrementing the doctorId
 DoctorSchema.plugin(AutoIncrement, { inc_field: 'doctorId' });
 
-const Doctor = mongoose.model('Doctor', DoctorSchema);
-
-module.exports = {
-  Doctor,
-  insertSampleDoctors: async () => {
-    const doctors = [
-      {
-        staffId: 1,
-        specializationId: 101,
-        qualifications: 'MBBS, MD'
-      },
-      {
-        staffId: 2,
-        specializationId: 102,
-        qualifications: 'MBBS, MS'
-      }
-    ];
-
-    for (const doc of doctors) {
-      const exists = await Doctor.findOne({ staffId: doc.staffId });
-      if (!exists) {
-        await Doctor.create(doc); 
-      }
-    }
-
-    console.log('Doctors inserted with auto-incremented doctorId.');
-  }
-};
+module.exports = mongoose.model('Doctor', DoctorSchema);
