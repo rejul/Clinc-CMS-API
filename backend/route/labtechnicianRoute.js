@@ -5,28 +5,16 @@ const {
   labTestValidation,
   labTestResultValidation,
 } = require("../validation/labtechnicianValidator");
-const { validationResult } = require("express-validator");
-
-// Middleware to handle validation errors
-function handleValidationErrors(req, res, next) {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(400).json({ errors: errors.array() });
-  }
-  next();
-}
 
 // Lab Test Management
 router.post(
   "/labtests",
   labTestValidation,
-  handleValidationErrors,
   controller.addLabTest
 );
 router.put(
   "/labtests/:labTestId",
   labTestValidation,
-  handleValidationErrors,
   controller.updateLabTest
 );
 router.get("/labtests/:labTestId", controller.getLabTestById);
@@ -37,7 +25,6 @@ router.patch("/labtests/:labTestId/deactivate", controller.deactivateLabTest);
 router.post(
   "/labtests/results",
   labTestResultValidation,
-  handleValidationErrors,
   controller.createLabTestResult
 );
 router.get("/labtests/results", controller.getLabTestResultsByDate);
@@ -48,7 +35,6 @@ router.get(
 router.put(
   "/labtests/results/:labTestPrescriptionId",
   labTestResultValidation,
-  handleValidationErrors,
   controller.recordLabTestResult
 );
 router.patch(

@@ -5,6 +5,8 @@ const router = express.Router();
 const doctorController = require('../controller/doctorController.js');
 const {
     validateConsultation,
+    validateCreateConsultation,
+    validateUpdateConsultation,
     validateCreateMedicinePrescription,
     validateUpdateMedicinePrescription,
     validateCreateLabTestPrescription,
@@ -18,10 +20,10 @@ const {
 
 //======================= Consultation Notes =======================
 // Add Consultation Note: POST /api/consultations
-router.post('/consultations', validateConsultation, doctorController.addConsultationNote);
+router.post('/consultations', validateCreateConsultation, doctorController.addConsultationNote);
 
 // Update Consultation Note: PUT /api/consultations/{consultationId}
-router.put('/consultations/:consultationId', validateConsultation, doctorController.updateConsultationNote);
+router.put('/consultations/:consultationId', validateUpdateConsultation, doctorController.updateConsultationNote);
 
 // Get Consultation Note by Appointment ID: GET /api/consultations/appointment/{appointmentId}
 router.get('/consultations/appointment/:appointmentId', doctorController.getConsultationByAppointmentId);

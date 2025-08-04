@@ -4,6 +4,7 @@ const labtestpre = require('../model/doctor/labtestpre.js');
 
 //================Consultation Notes==========================
 
+
 // Add Consultation Note: POST /api/consultations 
 exports.addConsultationNote = async (req, res) => {
     try {
@@ -33,6 +34,8 @@ exports.updateConsultationNote = async (req, res) => {
 // Get Consultation Note by Appointment ID: GET /api/consultations/appointment/{appointmentId}
 exports.getConsultationByAppointmentId = async (req, res) => {
     try {
+        console.log('Decoded user from controller:', req.user);
+
         const appointmentId = Number(req.params.appointmentId);
         const consultations = await consult.find({ appointmentId: appointmentId })
             .populate({
@@ -56,12 +59,15 @@ exports.getConsultationByAppointmentId = async (req, res) => {
                 localField: 'prescriptionId',
                 foreignField: 'prescriptionId'
             });
-        if (consultations.length === 0) {
-            return res.status(404).json({ message: 'No consultations found for this appointment' });
-        }
-        res.status(200).json({ consultations });
+if (consultations.length === 0) {
+    return res.status(404).json({ message: 'No consultations found for this appointment' });
+}
+res.status(200).json({
+    message: 'Consultation notes retrieved successfully',
+    consultations
+});
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error: error.message });
+        res.status(500).json({ message: 'Server error',  error: error.message });
     }
 };
 

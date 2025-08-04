@@ -22,29 +22,7 @@ const {
   getSpecializationByIdValidation
 } = require('../validation/adminvalidation');
 
-// ================= JWT MIDDLEWARE DIRECTLY HERE =================
-const verifyAdmin = (req, res, next) => {
-  const authHeader = req.headers.authorization;
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return res.status(401).json({ error: 'No token provided' });
-  }
-
-  const token = authHeader.split(' ')[1];
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || 'hai');
-
-    if (decoded.role !== 'Admin') {
-      return res.status(403).json({ error: 'Access denied: Admins only' });
-    }
-
-    req.user = decoded;
-    next();
-  } catch (err) {
-    return res.status(401).json({ error: 'Invalid or expired token' });
-  }
-};
+// JWT middleware is handled by the auth and authorize middleware in server.js
 
 
 // ==================== AUTHENTICATION (UNPROTECTED) ====================
@@ -70,6 +48,12 @@ router.delete('/staff/:id', deleteStaffValidation, adminController.deleteStaff);
 // Deactivate staff
 router.patch('/staff/:staffId/deactivate', deactivateStaffValidation, adminController.deactivateStaff);
 
+// Get staff by role ID
+router.get('/staff/role/:roleId', adminController.getStaffByRole);
+
+// Get staff by role name
+router.get('/staff/role-name/:roleName', adminController.getStaffByRoleName);
+
 // ==================== ROLE MANAGEMENT ====================
 router.post('/roles', createRoleValidation, adminController.createRole);
 router.get('/roles', adminController.getAllRoles);
@@ -90,8 +74,6 @@ router.get('/specializations', adminController.getAllSpecializations);
 router.get('/specializations/:specializationId', getSpecializationByIdValidation, adminController.getSpecializationById);
 router.put('/specializations/:specializationId', updateSpecializationValidation, adminController.updateSpecialization);
 
-// ==================== AUTHENTICATION ====================
-// Staff login
-router.post('/staff/login', loginValidation, adminController.login);
+// Authentication routes are handled by authRoute.js
 
 module.exports = router;

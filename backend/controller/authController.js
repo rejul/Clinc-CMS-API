@@ -66,7 +66,7 @@ exports.login = async (req, res) => {
 
     //  Generate token
     const token = jwt.sign(
-      { id: staff._id, 
+      { staffId: staff.staffId, 
         roleId: staff.roleId 
       },
       process.env.JWT_SECRET,
@@ -74,6 +74,7 @@ exports.login = async (req, res) => {
     );
 
     // Return token and optional user info
+    
     // Note: Do not return sensitive information like password
   
 

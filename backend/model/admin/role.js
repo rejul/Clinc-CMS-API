@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 // Role Schema
 const RoleSchema = new mongoose.Schema({
-  roleId: { type: Number, unique: true },
+  roleId: { type: Number, unique: true , required:true},
   name: {
     type: String,
     enum: ['Admin', 'Doctor', 'Receptionist', 'Lab Technician', 'Pharmacist'],
@@ -13,16 +13,17 @@ const RoleSchema = new mongoose.Schema({
 }, {
   timestamps: true,
   autoIndex: true,
-  versionKey: false, // Disable __v field
+  versionKey: false,
   toJSON: {
     transform: function(doc, ret) {
-      delete ret._id;   // Remove _id field in view
-      delete ret.__v;   // Remove __v field in view
+      delete ret._id;
+      delete ret.__v;
       return ret;
     }
   }
 });
 
+// Create Role model
 const Role = mongoose.model('Role', RoleSchema);
 
 // Insert all roles in DB if not present
@@ -36,16 +37,17 @@ async function insertDefaultRoles() {
   ];
 
   for (const role of defaultRoles) {
-    // Upsert: insert if not exists
     await Role.updateOne(
       { roleId: role.roleId },
       { $setOnInsert: role },
       { upsert: true }
     );
   }
+  console.log('Default roles inserted (if not already present).');
 }
 
-Role.insertDefaultRoles = insertDefaultRoles;
-// Export the Role model
-module.exports = mongoose.model('Role', RoleSchema);
-module.exports = Role;
+// Export both Role model and insertDefaultRoles
+module.exports = {
+  Role,
+  insertDefaultRoles
+};

@@ -8,6 +8,7 @@ const jwt = require('jsonwebtoken');
 const authorize = (allowedRoles = []) => {
   return (req, res, next) => {
     const user = req.user;
+//console.log('Decoded user:', req.user);
 
     if (!user) {
       return res.status(401).json({ message: 'Unauthorized: User not found' });

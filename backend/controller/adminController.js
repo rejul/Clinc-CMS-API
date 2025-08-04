@@ -95,7 +95,7 @@ exports.login = async (req, res) => {
       return res.status(403).json({ error: 'Account is deactivated' });
     }
 
-    if (staff.roleId.name !== 'Admin') {
+    if (staff.roleId !== 1) {
       return res.status(403).json({ error: 'Access denied: not an Admin' });
     }
 
@@ -107,7 +107,7 @@ exports.login = async (req, res) => {
     const token = jwt.sign(
       {
         staffId: staff.staffId,
-        role: staff.roleId.name,
+        roleId: staff.roleId,
         email: staff.email
       },
       process.env.JWT_SECRET || 'default_secret_key',
@@ -121,7 +121,7 @@ exports.login = async (req, res) => {
         staffId: staff.staffId,
         name: staff.name,
         email: staff.email,
-        role: staff.roleId.name
+        roleId: staff.roleId
       }
     });
 
@@ -320,5 +320,103 @@ exports.deactivateStaff = async (req, res) => {
     res.json(staff);
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+};
+
+// --- GET STAFF BY ROLE ---
+exports.getStaffByRole = async (req, res) => {
+  try {
+    const { roleId } = req.params;
+    
+    // Validate roleId
+    if (!roleId || isNaN(roleId) || roleId < 1 || roleId > 5) {
+      return res.status(400).json({ 
+        error: 'Invalid role ID. Must be between 1-5' 
+      });
+    }
+
+    const staff = await Staff.find({ 
+      roleId: parseInt(roleId),
+      isActive: true 
+    }).populate({
+      path: 'roleId',
+      model: 'Role',
+      localField: 'roleId',
+      foreignField: 'roleId',
+      justOne: true
+    });
+
+    if (!staff || staff.length === 0) {
+      return res.status(404).json({ 
+        error: 'No staff found for this role',
+        roleId: parseInt(roleId)
+      });
+    }
+
+    res.json({
+      message: `Staff found for role ID ${roleId}`,
+      count: staff.length,
+      staff: staff
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// --- GET STAFF BY ROLE NAME ---
+exports.getStaffByRoleName = async (req, res) => {
+  try {
+    const { roleName } = req.params;
+    
+    // Validate role name
+    const validRoles = ['Admin', 'Doctor', 'Receptionist', 'Lab Technician', 'Pharmacist'];
+    if (!validRoles.includes(roleName)) {
+      return res.status(400).json({ 
+        error: 'Invalid role name. Must be one of: Admin, Doctor, Receptionist, Lab Technician, Pharmacist' 
+      });
+    }
+
+    // First get the role ID for the role name
+    const role = await Role.findOne({ name: roleName });
+    if (!role) {
+      return res.status(404).json({ 
+        error: 'Role not found',
+        roleName: roleName
+      });
+    }
+
+    const staff = await Staff.find({ 
+      roleId: role.roleId,
+      isActive: true 
+    }).populate({
+      path: 'roleId',
+      model: 'Role',
+      localField: 'roleId',
+      foreignField: 'roleId',
+      justOne: true
+    });
+
+    if (!staff || staff.length === 0) {
+      return res.status(404).json({ 
+        error: 'No staff found for this role',
+        roleName: roleName,
+        roleId: role.roleId
+      });
+    }
+
+    res.json({
+      message: `Staff found for role: ${roleName}`,
+      count: staff.length,
+      role: {
+        roleId: role.roleId,
+        name: role.name,
+        description: role.description
+      },
+      staff: staff
+    });
+
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 };
