@@ -97,7 +97,6 @@ const startServer = async () => {
     try {
         await connectDB(); // Wait for DB connection
         await insertDefaultRoles(); // Insert default roles
-        await insertSampleDoctors(); // Insert sample doctors
         app.listen(PORT, () => {
             console.log(`Server is running on port ${PORT}`);
         });
