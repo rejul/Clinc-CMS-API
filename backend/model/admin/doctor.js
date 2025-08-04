@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const AutoIncrement = require('mongoose-sequence')(mongoose);
 
 const DoctorSchema = new mongoose.Schema({
-  doctorId: { type: Number, unique: true}, // This is the field being auto-incremented
+  doctorId: { type: Number, unique: true, required: true }, // This is the field being auto-incremented
   staffId: { type: Number, ref: 'Staff', required: true },
   specializationId: { type: Number, ref: 'Specialization', required: true },
   qualifications: { type: String, required: true },
