@@ -63,6 +63,7 @@ const createConsultationValidation = [
   body('appointmentId').isNumeric().withMessage('Appointment ID is required'),
   body('doctorId').isNumeric().withMessage('Doctor ID is required'),
   body('patientId').isNumeric().withMessage('Patient ID is required'),
+  body('prescriptionId').isNumeric().withMessage('Prescription ID  is required'),
   body('consultationDate')
     .optional()
     .isISO8601()
